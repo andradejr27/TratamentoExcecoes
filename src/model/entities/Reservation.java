@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainExceptions;
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -12,10 +14,10 @@ public class Reservation {
 	
 	public static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public Reservation() {
-	}
-	
-	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+	public Reservation(Integer roomNumber, Date checkIn, Date checkOut){
+		if (!checkOut.after(checkIn)) {
+			throw new DomainExceptions("Erro na reserva! A data do Ckeck-out não pode ser anterior ao Check-in");
+		}
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -52,19 +54,17 @@ public class Reservation {
 		long diff = checkOut.getTime() - checkIn.getTime(); // long pq o numero é um milisegundos. getTime é função de tempo em Java
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS); // Converte milisegundos em dias pelo TimeUnit
 	}
-	
-	public String updateDates(Date checkin, Date checkout) {
+
+	public void updateDates(Date checkin, Date checkout){
 		Date hoje = new Date();
-		
 		if (checkin.before(hoje) || (checkout.before(hoje))) {
-			return "Erro na reserva! A data do Ckeck-out não pode ser anterior a data atual.";
+			throw new DomainExceptions("Erro na reserva! A data do Ckeck-out não pode ser anterior a data atual.");
 		}
 		if (!checkout.after(checkin)) {
-			return "Erro na reserva! A data do Ckeck-out não pode ser anterior ao Check-in";
+			throw new DomainExceptions("Erro na reserva! A data do Ckeck-out não pode ser anterior ao Check-in");
 		}
 		this.checkIn = checkin;
 		this.checkOut = checkout;
-		return null;
 	}
 	
 	@Override
