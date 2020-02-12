@@ -13,7 +13,7 @@ public class Program {
 
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		Date hoje = new Date();
+		
 		
 		System.out.print("Numero do Quarto: ");
 		int quarto = sc.nextInt();
@@ -21,19 +21,9 @@ public class Program {
 		Date checkin = sdf.parse(sc.next());
 		System.out.print("Data de Check-out (dd/mm/aaaa): ");
 		Date checkout = sdf.parse(sc.next());
-		
-		if (checkin.before(hoje) || (checkout.before(hoje))) {
-			System.out.println("Erro na reserva! A data do Ckeck-out não pode ser anterior a data atual.");
-		}
-		
-		if (!checkout.after(checkin)) {
-			System.out.println("Erro na reserva! A data do Ckeck-out não pode ser anterior ao Check-in");
-		}
-		else {
-			Reservation reserva = new Reservation(quarto, checkin, checkout);
-			System.out.println("Reserva: " + reserva);
-			System.out.println();
-		}
+		Reservation reserva = new Reservation(quarto, checkin, checkout);
+		System.out.println("Reserva: " + reserva);
+		System.out.println();
 		
 		System.out.println("Digite as novas datas da reserva: ");
 		System.out.print("Data de Check-in (dd/mm/aaaa): ");
@@ -41,13 +31,13 @@ public class Program {
 		System.out.print("Data de Check-out (dd/mm/aaaa): ");
 		checkout = sdf.parse(sc.next());
 		
-		if (checkin.before(hoje) || (checkout.before(hoje))) {
-			System.out.println("Erro na reserva! A data do Ckeck-out não pode ser anterior a data atual.");
+		String error = reserva.updateDates(checkin, checkout);
+		
+		if (error != null) {
+			System.out.println("Erro na reserva: " + error);
 		}
 		else {
-			Reservation reserva = new Reservation(quarto, checkin, checkout);
-			System.out.println("Reserva: " + reserva);
-			System.out.println();
+			System.out.println("Reserva Atualizada: " + reserva);
 		}
 		
 		sc.close();
